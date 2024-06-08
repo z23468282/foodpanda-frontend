@@ -22,16 +22,24 @@ const formSchema = z.object({
   city: z.string().min(1, '城市須填寫'),
 });
 
-type userFormData = z.infer<typeof formSchema>;
+export type UserFormData = z.infer<typeof formSchema>;
 
 type Props = {
-  onSave: (userProfileData: userFormData) => void;
+  onSave: (userProfileData: UserFormData) => void;
   isLoading: boolean;
   currentUser: User;
+  title?: string;
+  buttonText?: string;
 };
 
-const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
-  const form = useForm<userFormData>({
+const UserProfileForm = ({
+  onSave,
+  isLoading,
+  currentUser,
+  title = '個人檔案表單',
+  buttonText = '保存',
+}: Props) => {
+  const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: currentUser,
   });
@@ -43,7 +51,7 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
         className="space-y-4 bg-gray-50 rounded-lg md:p-10"
       >
         <div className="space-y-1">
-          <h2 className="text-3xl fond-bold ">個人檔案表單</h2>
+          <h2 className="text-3xl fond-bold ">{title}</h2>
           <FormDescription>查看或更改你的個人資料</FormDescription>
         </div>
 
@@ -107,7 +115,7 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
           <LoadingButton />
         ) : (
           <Button type="submit" className="bg-orange-500">
-            保存
+            {buttonText}
           </Button>
         )}
       </form>

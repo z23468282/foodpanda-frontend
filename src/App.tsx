@@ -4,6 +4,9 @@ import Home from './pages/Home';
 import AuthCallBack from './pages/AuthCallBack';
 import UserProfile from './pages/UserProfile';
 import ProtectedRoute from './auth/ProtectedRoute';
+import ManageRestaurant from './pages/ManageRestaurant';
+import Search from './pages/Search';
+import Detail from './pages/Detail';
 
 function App() {
   return (
@@ -16,7 +19,25 @@ function App() {
           </Layout>
         }
       />
+      <Route path="/auth-callback" element={<AuthCallBack />} />
+      <Route
+        path="/search/:city"
+        element={
+          <Layout>
+            <Search />
+          </Layout>
+        }
+      />
+      <Route
+        path="/detail/:restaurantId"
+        element={
+          <Layout>
+            <Detail />
+          </Layout>
+        }
+      />
 
+      {/* 受保護的路由 */}
       <Route element={<ProtectedRoute />}>
         <Route
           path="/user-profile"
@@ -26,9 +47,16 @@ function App() {
             </Layout>
           }
         />
+        <Route
+          path="/manage-restaurant"
+          element={
+            <Layout>
+              <ManageRestaurant />
+            </Layout>
+          }
+        />
       </Route>
 
-      <Route path="/auth-callback" element={<AuthCallBack />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
