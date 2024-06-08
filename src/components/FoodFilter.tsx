@@ -2,7 +2,6 @@ import { foodList } from '@/config/restaurant-option';
 import { Label } from './ui/label';
 import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { ChangeEvent } from 'react';
-import { spawn } from 'child_process';
 import { Button } from './ui/button';
 
 type Props = {
