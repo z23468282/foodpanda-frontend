@@ -18,8 +18,6 @@ const PaginationSelector = ({ page, pages, onPageChange }: Props) => {
   for (let i = 1; i <= pages; i++) {
     pageNumbers.push(i);
   }
-  console.log(page);
-  console.log(pages);
 
   return (
     <Pagination>
