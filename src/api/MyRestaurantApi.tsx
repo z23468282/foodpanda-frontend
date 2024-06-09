@@ -1,4 +1,4 @@
-import { Restaurant } from '@/types';
+import { Order, Restaurant } from '@/types';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useMutation, useQuery } from 'react-query';
 import { toast } from 'sonner';
@@ -113,4 +113,87 @@ export const useUpdateMyRestaurant = () => {
   }
 
   return { updateRestaurant, isLoading };
+};
+
+export const useGetMyRestaurantOrders = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const getMyRestaurantOrderRequest = async (): Promise<Order[]> => {
+    const accessToken = await getAccessTokenSilently();
+
+    const res = await fetch(`${API_BASE_URL}/api/my/restaurant/orders`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'Application/json',
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error('無法獲取訂單');
+    }
+
+    return res.json();
+  };
+
+  const { data: orders, isLoading } = useQuery(
+    'fetchMyRestaurantOrders',
+    getMyRestaurantOrderRequest,
+    {
+      refetchInterval: 5000,
+    }
+  );
+
+  return { orders, isLoading };
+};
+
+type UpdateOrderStatusRequest = {
+  orderId: string;
+  status: string;
+};
+
+export const useUpdateMyRestaurantOrder = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const updateMyRestaurantOrder = async (
+    updateOrderStatusRequest: UpdateOrderStatusRequest
+  ) => {
+    const accessToken = await getAccessTokenSilently();
+
+    const res = await fetch(
+      `${API_BASE_URL}/api/my/restaurant/order/${updateOrderStatusRequest.orderId}/status`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: updateOrderStatusRequest.status }),
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error('無法更新狀態');
+    }
+
+    return res.json();
+  };
+
+  const {
+    mutateAsync: updateRestaurantOrderStatus,
+    isLoading,
+    isError,
+    isSuccess,
+    reset,
+  } = useMutation(updateMyRestaurantOrder);
+
+  if (isSuccess) {
+    toast.success('訂單已更新');
+  }
+
+  if (isError) {
+    toast.error('無法更新訂單');
+    reset();
+  }
+
+  return { updateRestaurantOrderStatus, isLoading };
 };

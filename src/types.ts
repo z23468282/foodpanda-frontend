@@ -26,6 +26,30 @@ export type Restaurant = {
   lastUpdated: string;
 };
 
+export type OrderStatus = '待付款' | '已付款' | '處理中' | '運輸中' | '已送達';
+
+export type Order = {
+  _id: string;
+  restaurant: Restaurant;
+  user: User;
+  cartItems: {
+    menuItemId: string;
+    name: string;
+    quantity: string;
+  }[];
+  deliveryDetails: {
+    name: string;
+    address: string;
+    city: string;
+    email: string;
+  };
+  totalAmount: number;
+  status: OrderStatus;
+  createdAt: string;
+  paidAt?: string;
+  restaurantId: string;
+};
+
 export type RestaurantSearchResponse = {
   data: Restaurant[];
   pagination: {
